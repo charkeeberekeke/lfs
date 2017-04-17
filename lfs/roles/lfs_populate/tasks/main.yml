@@ -1,0 +1,109 @@
+# Populate /mnt/lfs with necessary directories and files
+
+- name: Create folders
+  file:
+    path: /mnt/lfs/{{ item }}
+    state: directory
+    mode: 0755
+  with_items:
+    - usr
+    - sources
+    - tools
+
+- name: Chmod /mnt/lfs/sources to sticky
+  file:
+    path: /mnt/lfs/sources
+    mode: "a+wt"
+
+- name: Symbolink link /tools to /mnt/lfs/tools
+  file:
+    src: /mnt/lfs/tools
+    dest: /tools
+    state: link
+
+- name: copy package and patch files to /mnt/sources
+  copy: src={{ item }} dest=/mnt/lfs/sources
+  with_items:
+      - acl-2.2.52.src.tar.gz
+      - attr-2.4.47.src.tar.gz
+      - autoconf-2.69.tar.xz
+      - automake-1.15.tar.xz
+      - bash-4.3.30.tar.gz
+      - bash-4.3.30-upstream_fixes-3.patch
+      - bc-1.06.95-memory_leak-1.patch
+      - bc-1.06.95.tar.bz2
+      - binutils-2.27.tar.bz2
+      - bison-3.0.4.tar.xz
+      - bzip2-1.0.6-install_docs-1.patch
+      - bzip2-1.0.6.tar.gz
+      - check-0.10.0.tar.gz
+      - coreutils-8.25-i18n-2.patch
+      - coreutils-8.25.tar.xz
+      - dejagnu-1.6.tar.gz
+      - diffutils-3.5.tar.xz
+      - e2fsprogs-1.43.1.tar.gz
+      - eudev-3.2.tar.gz
+      - expat-2.2.0.tar.bz2
+      - expect5.45.tar.gz
+      - file-5.28.tar.gz
+      - findutils-4.6.0.tar.gz
+      - flex-2.6.1.tar.xz
+      - gawk-4.1.3.tar.xz
+      - gcc-6.2.0.tar.bz2
+      - gdbm-1.12.tar.gz
+      - gettext-0.19.8.1.tar.xz
+      - glibc-2.24-fhs-1.patch
+      - glibc-2.24.tar.xz
+      - gmp-6.1.1.tar.xz
+      - gperf-3.0.4.tar.gz
+      - grep-2.25.tar.xz
+      - groff-1.22.3.tar.gz
+      - grub-2.02~beta3.tar.xz
+      - gzip-1.8.tar.xz
+      - iana-etc-2.30.tar.bz2
+      - inetutils-1.9.4.tar.xz
+      - intltool-0.51.0.tar.gz
+      - iproute2-4.7.0.tar.xz
+      - kbd-2.0.3-backspace-1.patch
+      - kbd-2.0.3.tar.xz
+      - kmod-23.tar.xz
+      - less-481.tar.gz
+      - lfs-bootscripts-20150222.tar.bz2
+      - libcap-2.25.tar.xz
+      - libpipeline-1.4.1.tar.gz
+      - libtool-2.4.6.tar.xz
+      - linux-4.7.2.tar.xz
+      - m4-1.4.17.tar.xz
+      - make-4.2.1.tar.bz2
+      - man-db-2.7.5.tar.xz
+      - man-pages-4.07.tar.xz
+      - mpc-1.0.3.tar.gz
+      - mpfr-3.1.4.tar.xz
+      - ncurses-6.0.tar.gz
+      - patch-2.7.5.tar.xz
+      - perl-5.24.0.tar.bz2
+      - pkg-config-0.29.1.tar.gz
+      - procps-ng-3.3.12.tar.xz
+      - psmisc-22.21.tar.gz
+      - readline-6.3.tar.gz
+      - readline-6.3-upstream_fixes-3.patch
+      - sed-4.2.2.tar.bz2
+      - shadow-4.2.1.tar.xz
+      - sysklogd-1.5.1.tar.gz
+      - sysvinit-2.88dsf-consolidated-1.patch
+      - sysvinit-2.88dsf.tar.bz2
+      - tar-1.29.tar.xz
+      - tcl-core8.6.6-src.tar.gz
+      - texinfo-6.1.tar.xz
+      - tzdata2016f.tar.gz
+      - udev-lfs-20140408.tar.bz2
+      - util-linux-2.28.1.tar.xz
+      - vim-7.4.tar.bz2
+      - XML-Parser-2.44.tar.gz
+      - xz-5.2.2.tar.xz
+      - zlib-1.2.8.tar.gz
+      - toolchain.sh
+      - toolchain2.sh
+      - toolchain_packages.sh
+      - lfs_build.sh
+      - lfs_build2.sh

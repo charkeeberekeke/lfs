@@ -1,0 +1,43 @@
+- name: Add lfs group
+  group: name=lfs state=present
+
+- name: Add lfs user
+  user: 
+    name: lfs
+    group: lfs
+    shell: /bin/bash
+    createhome: yes
+    skeleton: /dev/null
+    password: '$6$6gQ52hRqXPl$lqWR.AdLxAueK1afQ/FcdyvVpSAOSn7qiMRkTXOOA0b5EPdyslhjyKZ..v.1E9ughIPBwUA9C39/nqTZVwkR70'
+
+- name: Chown tools and sources folder to lfs
+  file:
+    path: /mnt/lfs/{{ item }}
+    owner: lfs
+    recurse: yes
+  with_items:
+    - tools
+    - sources
+
+- name: LFS env variable in root
+  lineinfile: 
+    dest: /root/.bash_profile
+    line: LFS=/mnt/lfs
+  #notify: source /root/.bash_profile        
+
+- name: Copy .bash_profile
+  copy: src={{ item }} dest=/home/lfs
+  with_items:
+    - .bash_profile
+    - .bashrc
+  #notify: source /home/lfs/.bash_profile
+
+- name: Create .ssh folder in lfs home directory
+  file:
+    path: /home/lfs/.ssh
+    state: directory
+    owner: lfs
+    mode: 0755
+
+- name: Copy ssh pub key to /home/lfs/.ssh/authorized_keys
+  copy: src="id_rsa.pub" dest=/home/lfs/.ssh/authorized_keys

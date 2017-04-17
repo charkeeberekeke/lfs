@@ -1,0 +1,15 @@
+- hosts: LFS
+  remote_user: root
+
+  roles:
+    - base_packages
+    - base_user
+    - lfs_disk
+    - lfs_populate
+    - lfs_user
+
+#- hosts: LFS
+#  remote_user: lfs
+
+#  roles:
+#    - toolchain_pass_1

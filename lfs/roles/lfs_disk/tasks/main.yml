@@ -1,0 +1,30 @@
+# Create a logical volume off a 12Gb /dev/sdb disk
+#
+- name: Create a volume group from /dev/sdb
+  lvg:
+    vg: VolLFS
+    pvs: /dev/sdb
+
+- name: Create a logical volume from VolLFS
+  lvol:
+    vg: VolLFS
+    lv: lv_lfs
+    size: 8g
+
+- name: Format lfs disk to ext4 type
+  filesystem:
+    fstype: ext4
+    dev: /dev/VolLFS/lv_lfs
+
+- name: create lfs disk mountpoint
+  file:
+    path: /mnt/lfs
+    state: directory
+    mode: 0755
+
+- name: Mount lfs disk
+  mount:
+    name: /mnt/lfs
+    src: /dev/VolLFS/lv_lfs
+    state: mounted
+    fstype: ext4

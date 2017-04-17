@@ -1,0 +1,34 @@
+- name: Unpack {{ pkg }}
+  unarchive:
+    src: "{{ lfs_src }}/{{ pkg }}"
+    dest: "{{ lfs_src }}"
+    copy: no
+
+- name: Create build directory
+  file:
+    path: "{{ lfs_src }}/{{ pkg_dir }}/build"
+    state: directory
+
+- name: Run Configure
+  command: >
+    ../configure 
+    --prefix=/tools 
+    --host=$LFS_TGT 
+    --build=$(../scripts/config.guess) 
+    --enable-kernel=2.6.32 
+    --with-headers=/tools/include 
+    libc_cv_forced_unwind=yes 
+    libc_cv_c_cleanup=yes
+  args: 
+    chdir: "{{ lfs_src }}/{{ pkg_dir }}/build"
+
+- name: Make
+  command: make chdir="{{ lfs_src }}/{{ pkg_dir }}/build"
+    
+- name: Make install
+  command: make install chdir="{{ lfs_src }}/{{ pkg_dir }}/build"
+    
+- name: Delete build directory {{ lfs_src }}/{{ pkg_dir }}
+  file:
+    path: "{{ lfs_src }}/{{ pkg_dir }}"
+    state: absent

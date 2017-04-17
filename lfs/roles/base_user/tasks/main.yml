@@ -1,0 +1,10 @@
+- name: Add lfsuser group
+  group: name=lfsuser state=present
+
+- name: Add lfsuser user
+  user: 
+    name: lfsuser
+    group: lfsuser
+    shell: /bin/bash
+    createhome: yes
+    skeleton: /dev/null

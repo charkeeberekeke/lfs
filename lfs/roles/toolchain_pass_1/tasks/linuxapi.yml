@@ -1,0 +1,22 @@
+# linux api headers
+
+- name: Unpack {{ pkg }}
+  unarchive:
+    src: "{{ lfs_src }}/{{ pkg }}"
+    dest: "{{ lfs_src }}"
+    copy: no
+
+- name: Make
+  command: make mrproper chdir="{{ lfs_src }}/{{ pkg_dir }}"
+  
+- name: Make install
+  command: make INSTALL_HDR_PATH=dest headers_install chdir="{{ lfs_src }}/{{ pkg_dir }}"
+  
+- name: Copy include files
+#  command: cp -rv dest/include/* /tools/include chdir="{{ lfs_src }}/{{ pkg_dir }}"
+  command: cp -rv "{{ lfs_src }}/{{ pkg_dir }}"/dest/include/cd /tools/include
+  
+- name: Delete build directory {{ lfs_src }}/{{ pkg_dir }}
+  file:
+    path: "{{ lfs_src }}/{{ pkg_dir }}"
+    state: absent

@@ -1,0 +1,79 @@
+- name: Unpack {{ pkg }}
+  unarchive:
+    src: "{{ lfs_src }}/{{ pkg }}"
+    dest: "{{ lfs_src }}"
+    copy: no
+    
+- name: Unpack dependent packages
+  unarchive:
+    src: "{{ lfs_src }}/{{ item }}"
+    dest: "{{ lfs_src }}/{{ pkg_dir }}"
+    copy: no
+  with_items:
+    - mpfr-3.1.4.tar.xz
+    - gmp-6.1.1.tar.xz
+    - mpc-1.0.3.tar.gz
+    
+- name: rename mpfr-3.1.4
+  command: mv  mpfr-3.1.4 mpfr
+  args:
+    chdir: "{{ lfs_src }}/{{ pkg_dir }}"
+
+- name: rename gmp-6.1.1
+  command: mv  gmp-6.1.1 gmp
+  args:
+    chdir: "{{ lfs_src }}/{{ pkg_dir }}"
+
+- name: rename mpc-1.0.3
+  command: mv mpc-1.0.3 mpc
+  args:
+    chdir: "{{ lfs_src }}/{{ pkg_dir }}"
+
+
+- name: Create build directory
+  file:
+    path: "{{ lfs_src }}/{{ pkg_dir }}/build"
+    state: directory
+
+- name: Adjust linker paths 
+  script: gcc.sh
+  args:
+    chdir: "{{ lfs_src }}/{{ pkg_dir }}"
+    
+- name: Run Configure
+  command: >
+        ../configure 
+        --target=$LFS_TGT 
+        --prefix=/tools 
+        --with-glibc-version=2.11 
+        --with-sysroot=$LFS 
+        --with-newlib 
+        --without-headers 
+        --with-local-prefix=/tools 
+        --with-native-system-header-dir=/tools/include 
+        --disable-nls 
+        --disable-shared 
+        --disable-multilib 
+        --disable-decimal-float 
+        --disable-threads 
+        --disable-libatomic 
+        --disable-libgomp 
+        --disable-libmpx 
+        --disable-libquadmath 
+        --disable-libssp 
+        --disable-libvtv 
+        --disable-libstdcxx 
+        --enable-languages=c,c++
+  args: 
+    chdir: "{{ lfs_src }}/{{ pkg_dir }}/build"
+
+- name: Make
+  command: make chdir="{{ lfs_src }}/{{ pkg_dir }}/build"
+    
+- name: Make install
+  command: make install chdir="{{ lfs_src }}/{{ pkg_dir }}/build"
+    
+- name: Delete build directory {{ lfs_src }}/{{ pkg_dir }}
+  file:
+    path: "{{ lfs_src }}/{{ pkg_dir }}"
+    state: absent

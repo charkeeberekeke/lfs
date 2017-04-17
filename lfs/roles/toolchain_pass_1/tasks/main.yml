@@ -1,0 +1,6 @@
+# tasks here
+
+- include: binutils.yml pkg=binutils-2.27.tar.bz2 pkg_dir=binutils-2.27
+- include: gcc.yml pkg=gcc-6.2.0.tar.bz2 pkg_dir=gcc-6.2.0
+- include: linuxapi.yml pkg=linux-4.7.2.tar.xz pkg_dir=linux-4.7.2
+- include: glibc.yml pkg=glibc-2.24.tar.xz pkg_dir=glibc-2.24
